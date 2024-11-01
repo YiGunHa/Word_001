@@ -3,18 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Word Puzzle Game</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>10x10 Grid</title>
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(10, 50px);
+            grid-template-rows: repeat(10, 50px);
+            gap: 5px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 50px;
+        }
+
+        .grid-item {
+            width: 50px;
+            height: 50px;
+            background-color: lightgray;
+            border: 1px solid #333;
+        }
+    </style>
 </head>
 <body>
-    <div id="game-board"></div>
-    <div id="word-display">
-        <p>1. 사랑하다 (Love)</p>
-        <p>2. 먹다 (Eat)</p>
-        <p>3. 마시다 (Drink)</p>
-        <p>4. 간다라고하다 (Go)</p>
+    <div class="grid-container">
+        <!-- 10x10 그리드를 위한 100개의 div 요소 -->
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <!-- ...100개의 div 요소 반복... -->
+        <!-- 아래 코드는 반복문이 없으므로 필요에 따라 코드를 복사하여 100개의 .grid-item을 추가 -->
+        <!-- 예: 복사하여 100개의 <div class="grid-item"></div> 생성 -->
     </div>
-    <div id="selected-word"></div>
-    <script src="script.js"></script>
 </body>
 </html>
+
