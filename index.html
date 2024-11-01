@@ -1,86 +1,20 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>단어 퍼즐 게임</title>
-    <style>
-        #puzzle {
-            display: grid;
-            grid-template-columns: repeat(10, 40px);
-            grid-template-rows: repeat(10, 40px);
-            gap: 2px;
-            margin-top: 20px;
-        }
-        .cell {
-            width: 40px;
-            height: 40px;
-            text-align: center;
-            font-size: 20px;
-            background-color: #f0f0f0;
-            border: 1px solid #ccc;
-        }
-        .highlight {
-            background-color: #ffeb3b;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Puzzle Game</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-<h1>단어 퍼즐 게임</h1>
-<p>단어를 찾아보세요! 예: "바보"</p>
-<div id="puzzle"></div>
-
-<script>
-    const puzzleContainer = document.getElementById("puzzle");
-    const puzzleSize = 10;
-    const words = ["바보"];
-    const puzzle = Array.from({ length: puzzleSize }, () => Array(puzzleSize).fill(""));
-
-    // 퍼즐을 채우는 함수
-    function placeWords() {
-        for (const word of words) {
-            let placed = false;
-            while (!placed) {
-                const row = Math.floor(Math.random() * puzzleSize);
-                const col = Math.floor(Math.random() * (puzzleSize - word.length));
-                if (puzzle[row].slice(col, col + word.length).every(cell => cell === "")) {
-                    for (let i = 0; i < word.length; i++) {
-                        puzzle[row][col + i] = word[i];
-                    }
-                    placed = true;
-                }
-            }
-        }
-    }
-
-    // 랜덤 알파벳으로 퍼즐을 채움
-    function fillRandomLetters() {
-        for (let row = 0; row < puzzleSize; row++) {
-            for (let col = 0; col < puzzleSize; col++) {
-                if (puzzle[row][col] === "") {
-                    puzzle[row][col] = String.fromCharCode(44032 + Math.random() * (55203 - 44032));
-                }
-            }
-        }
-    }
-
-    // 퍼즐을 화면에 그리기
-    function renderPuzzle() {
-        puzzleContainer.innerHTML = "";
-        for (let row = 0; row < puzzleSize; row++) {
-            for (let col = 0; col < puzzleSize; col++) {
-                const cell = document.createElement("div");
-                cell.textContent = puzzle[row][col];
-                cell.classList.add("cell");
-                puzzleContainer.appendChild(cell);
-            }
-        }
-    }
-
-    placeWords();
-    fillRandomLetters();
-    renderPuzzle();
-</script>
-
+    <div id="game-board"></div>
+    <div id="word-display">
+        <p>1. 사랑하다 (Love)</p>
+        <p>2. 먹다 (Eat)</p>
+        <p>3. 마시다 (Drink)</p>
+        <p>4. 간다라고하다 (Go)</p>
+    </div>
+    <div id="selected-word"></div>
+    <script src="script.js"></script>
 </body>
 </html>
