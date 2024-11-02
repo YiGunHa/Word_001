@@ -1,93 +1,149 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>7x7 Grid with Randomized Words</title>
+    <title>단어 맞추기 게임</title>
     <style>
         body {
-            background-color: #000000; /* 전체 배경을 검은색으로 설정 */
-            color: white;
-            text-align: center;
-            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
         }
-        .grid-container {
+        .header {
+            margin: 20px;
+            font-size: 24px;
+        }
+        .grid {
             display: grid;
             grid-template-columns: repeat(7, 50px);
-            grid-template-rows: repeat(7, 50px);
             gap: 5px;
-            margin: 20px auto;
-            width: max-content;
+            margin-bottom: 20px;
         }
-        .square {
+        .cell {
             width: 50px;
             height: 50px;
-            background-color: lightgray;
-            border: 1px solid black;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 24px;
+            border: 1px solid #000;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .cell.empty {
+            border: 1px dashed #ccc;
+            cursor: default;
+        }
+        .bottom-row {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+        .hidden {
+            display: none;
+        }
+        #end-message {
+            font-size: 32px;
+            color: red;
+        }
+        .alert {
+            color: red;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
-    <h1 id="prompt">Prompt01: Act</h1>
-    <div class="grid-container" id="grid"></div>
+    <div class="header" id="header">맞출 단어 1 / 10 : English Translation</div>
+    <div class="grid" id="grid"></div>
+    <div class="bottom-row" id="bottomRow"></div>
+    <div id="alert" class="alert hidden">틀렸습니다. 다시 시도하세요!</div>
+    <div id="end-message" class="hidden">사랑합니다</div>
 
     <script>
-        // 변수 정의
-        const Word01 = "행동하다";
-        const Word02 = "달리다";
-        const Word03 = "먹다";
-        const Word04 = "마시다";
-        const Word05 = "읽다";
-        const Word06 = "쓰다";
-        const Word07 = "웃다";
-        const Word08 = "보다";
-        const Word09 = "기다리다";
-        const Word10 = "말하다";
+        // 초기 데이터 설정
+        const words = ["단어", "사과", "하늘", "바다", "기차길", "강아지", "음악", "책상", "학교", "사랑"];
+        const englishTranslations = ["Word", "Apple", "Sky", "Sea", "Train", "Puppy", "Music", "Desk", "School", "Love"];
+        let currentWordIndex = 0;
+        let currentWord = words[currentWordIndex].split('');
+        let clickedLetters = [];
 
-        // 각 동사의 영어 번역을 Prompt 변수에 넣기
-        const Prompt01 = "Act";
-        const Prompt02 = "Run";
-        const Prompt03 = "Eat";
-        const Prompt04 = "Drink";
-        const Prompt05 = "Read";
-        const Prompt06 = "Write";
-        const Prompt07 = "Laugh";
-        const Prompt08 = "See";
-        const Prompt09 = "Wait";
-        const Prompt10 = "Speak";
+        // 7x7 정사각형을 랜덤하게 채우기
+        function createGrid() {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '';
+            let allLetters = words.join('').split('');
+            allLetters = allLetters.sort(() => Math.random() - 0.5);
 
-        // 모든 변수를 하나의 배열에 넣기
-        const words = [Word01, Word02, Word03, Word04, Word05, Word06, Word07, Word08, Word09, Word10];
-        let letters = [];
-
-        // 각 단어의 글자를 배열에 추가
-        words.forEach(word => {
-            letters.push(...word.split(''));
-        });
-
-        // 글자를 섞는 함수
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
+            for (let i = 0; i < 49; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                if (allLetters[i]) {
+                    cell.textContent = allLetters[i];
+                    cell.addEventListener('click', () => handleCellClick(cell));
+                } else {
+                    cell.textContent = '';
+                    cell.classList.add('empty');
+                }
+                grid.appendChild(cell);
             }
         }
 
-        // 글자 섞기
-        shuffle(letters);
+        // 클릭한 글자를 하단 7x1 공간으로 이동
+        function handleCellClick(cell) {
+            if (clickedLetters.length < currentWord.length && cell.textContent) {
+                clickedLetters.push(cell.textContent);
+                cell.textContent = '';
+                cell.classList.add('empty');
+                updateBottomRow();
 
-        // 7x7 정사각형에 글자 채우기
-        const gridContainer = document.getElementById('grid');
-        for (let i = 0; i < 49; i++) {
-            const square = document.createElement('div');
-            square.classList.add('square');
-            square.textContent = letters[i] || ''; // 글자가 남아 있지 않으면 빈칸
-            gridContainer.appendChild(square);
+                if (clickedLetters.length === currentWord.length) {
+                    checkCompletion();
+                }
+            }
         }
+
+        // 하단 7x1 공간 업데이트
+        function updateBottomRow() {
+            const bottomRow = document.getElementById('bottomRow');
+            bottomRow.innerHTML = '';
+            clickedLetters.forEach(letter => {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                cell.textContent = letter;
+                bottomRow.appendChild(cell);
+            });
+        }
+
+        // 단어 맞추기 확인
+        function checkCompletion() {
+            const alertBox = document.getElementById('alert');
+            if (clickedLetters.join('') === currentWord.join('')) {
+                alertBox.classList.add('hidden');
+                if (currentWordIndex < words.length - 1) {
+                    currentWordIndex++;
+                    currentWord = words[currentWordIndex].split('');
+                    clickedLetters = [];
+                    document.getElementById('header').textContent = `맞출 단어 ${currentWordIndex + 1} / ${words.length} : ${englishTranslations[currentWordIndex]}`;
+                    createGrid();
+                    updateBottomRow();
+                } else {
+                    document.getElementById('grid').classList.add('hidden');
+                    document.getElementById('bottomRow').classList.add('hidden');
+                    document.getElementById('header').classList.add('hidden');
+                    document.getElementById('end-message').classList.remove('hidden');
+                }
+            } else {
+                alertBox.classList.remove('hidden');
+                clickedLetters = [];
+                updateBottomRow();
+                createGrid();
+            }
+        }
+
+        // 초기 화면 설정
+        document.getElementById('header').textContent = `맞출 단어 1 / ${words.length} : ${englishTranslations[0]}`;
+        createGrid();
     </script>
 </body>
 </html>
