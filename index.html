@@ -3,118 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Centered 10x10 Grid with Variable Labels</title>
+    <title>10x10 Grid of Squares</title>
     <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .container {
-            display: flex;                             /* 그리드와 변수를 수평으로 배치 */
-        }
-
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(10, 50px); /* 10개의 열 설정 */
-            grid-template-rows: repeat(10, 50px);    /* 10개의 행 설정 */
-            gap: 5px;                                /* 셀 간 간격 */
+            grid-template-columns: repeat(10, 50px);
+            grid-template-rows: repeat(10, 50px);
+            gap: 5px;
         }
-
-        .grid-item {
-            display: flex;
-            justify-content: center;                 /* 가로 중앙 정렬 */
-            align-items: center;                     /* 세로 중앙 정렬 */
-            width: 50px;                             /* 각 정사각형의 너비 */
-            height: 50px;                            /* 각 정사각형의 높이 */
-            background-color: lightgray;             /* 배경색 */
-            border: 1px solid #333;                  /* 테두리 */
-            font-size: 20px;                         /* 글자 크기 */
-            text-align: center;                      /* 텍스트 가운데 정렬 */
-        }
-
-        .variable-label {
-            margin-left: 123px;                      /* 정사각형의 오른쪽에 위치 */
-            display: flex;
-            flex-direction: column;                   /* 세로로 나열 */
+        .square {
+            width: 50px;
+            height: 50px;
+            background-color: lightgray;
+            border: 1px solid black;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="grid-container" id="grid-container"></div>
-        <div class="variable-label" id="variable-label"></div> <!-- 변수를 표시할 공간 -->
-    </div>
-
-    <script>
-        // 20개의 변수 설정
-        const 변수1 = "사랑한다";
-        const 변수2 = "미워한다";
-        const 변수3 = "좋아한다";
-        const 변수4 = "싫어한다";
-        const 변수5 = "그립다";
-        const 변수6 = "보고싶다";
-        const 변수7 = "행복하다";
-        const 변수8 = "슬프다";
-        const 변수9 = "재미있다";
-        const 변수10 = "지루하다";
-        const 변수11 = "신난다";
-        const 변수12 = "우울하다";
-        const 변수13 = "상쾌하다";
-        const 변수14 = "졸립다";
-        const 변수15 = "기쁘다";
-        const 변수16 = "무섭다";
-        const 변수17 = "아쉽다";
-        const 변수18 = "부끄럽다";
-        const 변수19 = "감사하다";
-        const 변수20 = "미안하다";
-
-        // 모든 변수를 배열에 추가
-        const variables = [
-            변수1, 변수2, 변수3, 변수4, 변수5, 
-            변수6, 변수7, 변수8, 변수9, 변수10, 
-            변수11, 변수12, 변수13, 변수14, 변수15, 
-            변수16, 변수17, 변수18, 변수19, 변수20
-        ];
-
-        // 모든 문자열을 하나의 배열로 변환
-        const texts = variables.flatMap(variable => variable.split(''));
-        const gridSize = 100; // 10x10 = 100
-        const positions = Array.from({ length: gridSize }, (_, i) => i); // 0부터 99까지의 배열
-
-        // 랜덤한 위치로 섞기
-        for (let i = positions.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [positions[i], positions[j]] = [positions[j], positions[i]];
-        }
-
-        const gridContainer = document.getElementById('grid-container');
-        const variableLabel = document.getElementById('variable-label');
-
-        // 그리드 아이템 생성
-        for (let i = 0; i < gridSize; i++) {
-            const gridItem = document.createElement('div');
-            gridItem.className = 'grid-item';
-
-            // 랜덤 위치에 글자 배치
-            if (i < texts.length) {
-                gridItem.textContent = texts[positions[i]]; // 랜덤한 위치에서 글자 배치
-            } else {
-                gridItem.textContent = ""; // 나머지 정사각형은 비워둡니다.
+    <div class="grid-container">
+        <!-- JavaScript로 10x10 정사각형 생성 -->
+        <script>
+            for (let i = 0; i < 100; i++) {
+                document.write('<div class="square"></div>');
             }
-
-            gridContainer.appendChild(gridItem);
-        }
-
-        // 변수 값을 오른쪽에 세로로 표시
-        variables.forEach((variable, index) => {
-            const labelItem = document.createElement('div');
-            labelItem.textContent = variable;
-            variableLabel.appendChild(labelItem);
-        });
-    </script>
+        </script>
+    </div>
 </body>
 </html>
