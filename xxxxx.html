@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>단어 맞추기 게임</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        .sentence {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #333;
+            cursor: pointer;
+            background-color: #f9f9f9;
+        }
+        #answerSpace {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+        #startButton, #undoButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        #result, #correctAnswer, #timeDisplay {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+        #result {
+            color: red;
+        }
+        #correctAnswer {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>단어 맞추기 게임</h1>
+    <div id="sentences"></div>
+    <div id="answerSpace"></div>
+    <button id="startButton">시작</button>
+    <button id="undoButton" disabled>되돌리기</button>
+    <div id="result"></div>
+    <div id="correctAnswer"></div>
+    <div id="timeDisplay"></div>
+
+    <script>
+        const sentences = [
+            "이 영화 정말 재미&있어요.",
+            "나는 매일 아침 운동&을 해요."
+        ];
+
+        let currentSentenceIndex = 0;
+        let gameStarted = false;
+        let startTime;
+        const removedWords = [];
+
+        document.getElementById('startButton').addEventListener('click', startGame);
+        document.getElementById('undoButton').addEventListener('click', undoLastSelection);
+
+        function startGame() {
+            gameStarted = true;
+            startTime = new Date(); // 게임 시작 시간 기록
+            document.getElementById('result').innerText = '';
+            document.getElementById('correctAnswer').innerText = '';
+            document.getElementById('answerSpace').innerHTML = '';
+            document.getElementById('timeDisplay').innerText = '';
+            currentSentenceIndex = 0;
+            showNextSentence();
+            document.getElementById('undoButton').disabled = true; // 되돌리기 버튼 비활성화
+        }
+
+        function showNextSentence() {
+            if (currentSentenceIndex >= sentences.length) {
+                document.getElementById('result').innerHTML = '게임 종료! 모든 문장을 맞췄습니다.';
+                document.getElementById('sentences').innerHTML = ''; // 이전 문장 제거
+                document.getElementById('answerSpace').innerHTML = ''; // 정답 공간 초기화
+
+                // 게임 종료 시 걸린 시간 계산
+                const endTime = new Date();
+                const timeTaken = Math.floor((endTime - startTime) / 1000);
+                document.getElementById('timeDisplay').innerText = `게임에 걸린 시간: ${timeTaken}초`;
+
+                document.getElementById('undoButton').disabled = true; // 되돌리기 버튼 비활성화
+                return;
+            }
+
+            const currentSentence = sentences[currentSentenceIndex];
+            const words = currentSentence.split(/[\s&]/); // 공백과 &로 단어 나누기
+
+            const ampersandCount = currentSentence.split('&').length - 1;
+            const adjustedLength = words.length - ampersandCount - 1;
+
+            shuffleArray(words); // 단어 랜덤 배치
+
+            document.getElementById('sentences').innerHTML = ''; // 이전 문장 제거
+            document.getElementById('answerSpace').innerHTML = ''; // 정답 공간 초기화
+
+            words.forEach(word => {
+                if (word) {
+                    const wordDiv = document.createElement('div');
+                    wordDiv.className = 'sentence';
+                    wordDiv.innerText = `"${word}"`;
+                    wordDiv.addEventListener('click', () => selectWord(wordDiv, word));
+                    document.getElementById('sentences').appendChild(wordDiv);
+                }
+            });
+
+            for (let i = 0; i < adjustedLength; i++) {
+                const emptyDiv = document.createElement('div');
+                emptyDiv.className = 'sentence';
+                emptyDiv.innerText = `" "`;
+                emptyDiv.addEventListener('click', () => selectWord(emptyDiv, " "));
+                document.getElementById('sentences').appendChild(emptyDiv);
+            }
+        }
+
+        function selectWord(element, word) {
+            const parentElement = element.parentElement;
+            element.remove();
+
+            const answerSpace = document.getElementById('answerSpace');
+            const answerDiv = document.createElement('div');
+            answerDiv.className = 'sentence';
+            answerDiv.innerText = `${word}`;
+            answerSpace.appendChild(answerDiv);
+
+            removedWords.push(word);
+            document.getElementById('undoButton').disabled = false;
+
+            const answerArray = Array.from(answerSpace.children).map(div => div.innerText.replace(/"/g, '').trim());
+            const userAnswer = answerArray.join(' ').replace(/  +/g, ' ');
+            const correctAnswer = sentences[currentSentenceIndex].replace(/&/g, '').trim();
+
+            if (parentElement.children.length === 0 && userAnswer) {
+                if (userAnswer.replace(/\s/g, '') === correctAnswer.replace(/\s/g, '')) {
+                    currentSentenceIndex++;
+                    document.getElementById('result').innerText = '맞았습니다';
+                    showNextSentence();
+                } else {
+                    document.getElementById('result').innerText = '틀렸습니다';
+                    showNextSentence();
+                }
+            }
+        }
+
+        function undoLastSelection() {
+            if (removedWords.length > 0) {
+                const lastRemovedWord = removedWords.pop();
+                const wordDiv = document.createElement('div');
+                wordDiv.className = 'sentence';
+                wordDiv.innerText = `"${lastRemovedWord}"`;
+                wordDiv.addEventListener('click', () => selectWord(wordDiv, lastRemovedWord));
+                document.getElementById('sentences').appendChild(wordDiv);
+
+                if (document.getElementById('answerSpace').children.length > 0) {
+                    const lastAnswerElement = document.getElementById('answerSpace').lastElementChild;
+                    lastAnswerElement.remove();
+                }
+
+                if (removedWords.length === 0) {
+                    document.getElementById('undoButton').disabled = true;
+                }
+            }
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+    </script>
+
+</body>
+</html>
