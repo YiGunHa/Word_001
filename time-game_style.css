@@ -1,0 +1,121 @@
+       body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            min-height: 100vh;
+            margin: 0;
+            position: relative;
+            background-color: #2c2c2c; /* 다크 그레이 배경 */
+            color: #ffffff; /* 기본 텍스트 색상을 흰색으로 */
+        }
+        .clock-container {
+            margin: 10px;
+            width: 30%;
+            max-width: auto;
+        }
+        .clock-container svg {
+            width: 100%;
+            height: auto;
+        }
+        .clock-container svg circle,
+        .clock-container svg line {
+            stroke: #ffffff; /* 시계 선 색상을 흰색으로 */
+        }
+        .digital-time {
+            font-size: 24px;
+            margin: 10px 0;
+            text-align: center;
+            color: #ffffff;
+        }
+        .input-container {
+            margin: 20px 0;
+            width: 100%;
+            max-width: 300px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #3d3d3d;
+            color: #ffffff;
+            border: 1px solid #555555;
+            border-radius: 4px;
+        }
+        input[type="text"]::placeholder {
+            color: #aaaaaa;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 16px;
+            background-color: #4a4a4a;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #5a5a5a;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .footer {
+            margin-top: 40px;
+            padding: 20px;
+            font-size: 16px;
+            color: #aaaaaa;
+            font-style: italic;
+            text-align: center;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #3d3d3d;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            max-width: 90%;
+            width: 400px;
+            cursor: pointer;
+            color: #ffffff;
+        }
+        .modal-content {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            color: #ffffff;
+        }
+        .instruction-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 15px;
+            background-color: #4a4a4a;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .instruction-button:hover {
+            background-color: #5a5a5a;
+        }
